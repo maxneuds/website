@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximilian Neudert - Data Scientist</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .content {
+            z-index: 1;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 4em;
+            margin: 0.2em 0;
+        }
+
+        h2 {
+            font-size: 2em;
+            font-weight: 300;
+            margin: 0.2em 0;
+        }
+
+        img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-top: 20px;
+            border: 3px solid white;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="background"></canvas>
+    <div class="content">
+        <h1>Maximilian Neudert</h1>
+        <h2>Data Scientist</h2>
+        <img src="res/profile_web.png" alt="Profilbild von Maximilian Neudert">
+    </div>
+    <script>
+        const canvas = document.getElementById("background");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const nodes = [];
+        const connections = [];
+        const numNodes = 50;
+
+        // 3D-Rotation
+        let angleX = 0;
+        let angleY = 0;
+
+        // Geschwindigkeit der Animation
+        const rotationSpeed = 0.001; // Langsamer machen
+        const electronSpeed = 0.005;
+
+        // Zufällige 3D-Knoten erstellen
+        for (let i = 0; i < numNodes; i++) {
+            nodes.push({
+                x: Math.random() * 2 - 1,
+                y: Math.random() * 2 - 1,
+                z: Math.random() * 2 - 1,
+                size: Math.random() * 3 + 2,
+            });
+        }
+
+        // Verbindungen zwischen Knoten herstellen
+        for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+                if (Math.random() > 0.8) {
+                    connections.push({
+                        start: nodes[i],
+                        end: nodes[j],
+                        progress: Math.random(),
+                    });
+                }
+            }
+        }
+
+        function rotate3D(node) {
+            const cosX = Math.cos(angleX);
+            const sinX = Math.sin(angleX);
+            const cosY = Math.cos(angleY);
+            const sinY = Math.sin(angleY);
+
+            // Rotation um Y-Achse
+            let x = node.x * cosY - node.z * sinY;
+            let z = node.x * sinY + node.z * cosY;
+
+            // Rotation um X-Achse
+            let y = node.y * cosX - z * sinX;
+            z = node.y * sinX + z * cosX;
+
+            return { x, y, z };
+        }
+
+        function drawNode(node) {
+            const rotated = rotate3D(node);
+            const scale = (rotated.z + 2) / 3;
+            const x2D = canvas.width / 2 + rotated.x * canvas.width * 0.4 * scale;
+            const y2D = canvas.height / 2 + rotated.y * canvas.height * 0.4 * scale;
+
+            ctx.beginPath();
+            ctx.arc(x2D, y2D, node.size * scale, 0, Math.PI * 2);
+            ctx.fillStyle = "cyan";
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawConnection(connection) {
+            const start = rotate3D(connection.start);
+            const end = rotate3D(connection.end);
+
+            const scaleStart = (start.z + 2) / 3;
+            const scaleEnd = (end.z + 2) / 3;
+
+            const startX2D = canvas.width / 2 + start.x * canvas.width * 0.4 * scaleStart;
+            const startY2D = canvas.height / 2 + start.y * canvas.height * 0.4 * scaleStart;
+
+            const endX2D = canvas.width / 2 + end.x * canvas.width * 0.4 * scaleEnd;
+            const endY2D = canvas.height / 2 + end.y * canvas.height * 0.4 * scaleEnd;
+
+            // Verbindungslinie
+            ctx.beginPath();
+            ctx.moveTo(startX2D, startY2D);
+            ctx.lineTo(endX2D, endY2D);
+            ctx.strokeStyle = "rgba(0, 255, 255, 0.3)";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            ctx.closePath();
+
+            // Elektron
+            const progress = connection.progress;
+            const electronX = startX2D + progress * (endX2D - startX2D);
+            const electronY = startY2D + progress * (endY2D - startY2D);
+
+            ctx.beginPath();
+            ctx.arc(electronX, electronY, 3, 0, Math.PI * 2);
+            ctx.fillStyle = "yellow";
+            ctx.fill();
+            ctx.closePath();
+
+            // Fortschritt aktualisieren
+            connection.progress += electronSpeed;
+            if (connection.progress > 1) connection.progress = 0;
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            nodes.forEach(drawNode);
+            connections.forEach(drawConnection);
+
+            angleX += rotationSpeed;
+            angleY += rotationSpeed;
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>

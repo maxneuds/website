@@ -1,0 +1,36 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1000"
+    height="1000"
+    viewBox="0 0 1000 1000"
+    style="background-color: #282a36; border-radius: 15px;">
+    
+    <!-- Background Square with Rounded Corners -->
+    <rect x="0" y="0" width="100" height="100" rx="15" fill="#282A36"/>
+    
+    <!-- Connected Dots (Chart) -->
+    <polyline 
+        points="100,800 250,500 450,600 600,400 750,450 900,300"
+        fill="none" 
+        stroke="#88879A" 
+        stroke-width="30"/>
+    <polyline 
+        points="250,500 450,600 600,400 750,450"
+        fill="none" 
+        stroke="#88879A" 
+        stroke-width=""/>
+    
+    <!-- Dots on the Chart with Increased Radius -->
+    <circle cx="100" cy="800" r="40" fill="#50FA7B"/>
+    <circle cx="250" cy="500" r="40" fill="#50FA7B"/>
+    <circle cx="450" cy="600" r="60" fill="#FF5555"/>
+    <circle cx="600" cy="400" r="60" fill="#50FA7B"/>
+    <circle cx="750" cy="450" r="40" fill="#FF5555"/>
+    <circle cx="900" cy="300" r="40" fill="#50FA7B"/>
+
+    <!-- Magnifying Glass Ring -->
+    <circle cx="500" cy="500" r="220" fill="none" stroke="#FFB86C" stroke-width="50"/>
+    
+    <!-- Magnifying Glass Handle (Connected to the Ring) -->
+    <line x1="650" y1="650" x2="870" y2="870" stroke="#FFB86C" stroke-width="75"/>
+</svg>

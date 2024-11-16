@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximilian Neudert - Data Scientist</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" href="res/icon.png" type="image/png">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .container-background {
+            z-index: 0;
+            position: absolute;
+            top: 20%;
+            height: 80%;
+            width: 100%;
+            background-color: transparent;
+            opacity: 0.5;
+        }
+
+        .container-chart {
+            z-index: 10;
+            position: absolute;
+            top: 17%;
+            height: 20%;
+            width: 100%;
+            margin: -2%;
+            background-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-top">
+        <img src="res/profile_web.png" alt="Profile Picture: Maximilian Neudert">
+        <div class="info-container">
+            <h1>Maximilian Neudert</h1>
+            <h2>Data Science & Math</h2>
+        </div>
+        <div class="social-links">
+            <a href="https://github.com/maxneuds" target="_blank" title="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="mailto:max@neudert.me" title="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+    </div>
+    
+    <div class="container-background" id="container-background"></div>
+    <script src="scripts/animation_graph.js"></script>
+    <script>start_animation_graph('container-background', 5000);</script>
+    
+    <!-- <div class="container-chart" id="container-chart"></div>
+    <script src="/scripts/animation_chart.js"></script>
+    <script>start_animation_chart('container-chart');</script> -->
+</body>
+</html>
+
+
