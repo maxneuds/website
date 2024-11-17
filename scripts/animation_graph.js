@@ -12,7 +12,7 @@ function start_animation_graph(containerId, nodeSpeed, particleSpeed) {
     const nodes = [];
     const edges = [];
     const particles = [];
-    const numNodes = Math.trunc(canvasGraph.width * canvasGraph.height / 10000);
+    const numNodes = Math.min(Math.trunc(canvasGraph.width * canvasGraph.height / 10000), 100);
     const numParticles = numNodes * 2;
 
     // Initialize nodes with random positions and movement directions
