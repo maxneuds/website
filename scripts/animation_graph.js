@@ -1,6 +1,6 @@
 function start_animation_graph(containerId, nodeSpeed, particleSpeed) {
     const neuronColor = 'rgba(255, 255, 255, 1)'; // Color of the moving neurons
-    const edgeColor = 'rgba(170, 210, 255, 0.1)'; // Color of the graph edges
+    const edgeColor = 'rgba(192, 192, 192, 0.05)'; // Color of the graph edges
 
     const container = document.getElementById(containerId);
     const canvasGraph = document.createElement('canvas');
