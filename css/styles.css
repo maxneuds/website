@@ -20,13 +20,13 @@ body {
 
 
 h1 {
-    font-size: 2.5em;
+    font-size: 2em;
     font-weight: 700;
     margin: 0;
 }
 
 h2 {
-    font-size: 2em;
+    font-size: 1.5em;
     font-weight: 300;
     margin: 0;
 }
@@ -34,7 +34,7 @@ h2 {
 .container-top {
     z-index: 100;
     position: relative;
-    height: 12em;
+    height: 10em;
     width: 100%;
     display: flex;
     align-items: center;
@@ -46,7 +46,7 @@ h2 {
 }
 
 .container-top img {
-    height: 10em;
+    height: 8em;
     border-radius: 50%;
     margin-right: 1em;
     display: flex;
@@ -64,7 +64,7 @@ h2 {
 .container-background {
     z-index: 0;
     position: absolute;
-    top: 12em;
+    top: 10em;
     left: 0;
     width: 100%;
     height: calc(100vh - 12em);
@@ -73,27 +73,51 @@ h2 {
     opacity: 0.5;
 }
 
-.social-links {
+.container-links {
     display: flex;
-    gap: 1em;
-    margin-left: auto;
+    align-items: center;
+    justify-content: flex-start;
+    height: 4em;
+    gap: 1.5em;
+    /* background-color: #f0f0f0; */
+    padding-left: 1em;
 }
 
-.social-links a {
+/* .container-links a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 40px;
     height: 40px;
+    border-radius: 50%;
+    font-size: 3em;
+    color: white;
+    background-color: #44475A;
+    text-decoration: none;
+    transition: transform 0.2s, background-color 0.2s;
+} */
+
+/* .social-links {
+    display: flex;
+    gap: 1em;
+    margin-top: 1em;
+}*/
+
+.container-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
     background-color: #44475A;
     border-radius: 50%;
-    color: white;
-    font-size: 20px;
+    width: 1.4em;
+    height: 1.4em;
+    font-size: 2em;
     text-decoration: none;
     transition: transform 0.2s, background-color 0.2s;
 }
 
-.social-links a:hover {
+.container-links a:hover {
     background-color: #6272A4;
     transform: scale(1.2);
 }
