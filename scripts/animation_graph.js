@@ -1,10 +1,6 @@
-// FILE: animation_graph.js
-
-// FILE: animation_graph.js
-
-function start_animation_graph(containerId, rotationSpeed) {
-    const neuronColor = 'rgba(92, 179, 255, 1)'; // Color of the moving neurons
-    const edgeColor = 'rgba(170, 210, 255, 0.15)'; // Color of the graph edges
+function start_animation_graph(containerId, nodeSpeed, particleSpeed) {
+    const neuronColor = 'rgba(255, 255, 255, 1)'; // Color of the moving neurons
+    const edgeColor = 'rgba(170, 210, 255, 0.1)'; // Color of the graph edges
 
     const container = document.getElementById(containerId);
     const canvasGraph = document.createElement('canvas');
@@ -16,29 +12,28 @@ function start_animation_graph(containerId, rotationSpeed) {
     const nodes = [];
     const edges = [];
     const particles = [];
-    const numNodes = 30; // Reduced number of nodes for less density
-    const radius = Math.min(canvasGraph.width, canvasGraph.height) / 3; // Ensure nodes stay within container
-    const numParticles = 100; // Number of particles to simulate neurons
+    const numNodes = Math.trunc(canvasGraph.width * canvasGraph.height / 10000);
+    const numParticles = numNodes * 2;
 
+    // Initialize nodes with random positions and movement directions
     for (let i = 0; i < numNodes; i++) {
-        const angle = (i / numNodes) * Math.PI * 2;
         nodes.push({
-            x: Math.cos(angle) * radius,
-            y: Math.sin(angle) * radius,
-            z: Math.random() * radius - radius / 2,
-            phase: Math.random() * Math.PI * 2, // Random phase for pulsating effect
-            moveX: (Math.random() - 0.5) * 2, // Random movement in X direction
-            moveY: (Math.random() - 0.5) * 2, // Random movement in Y direction
-            moveZ: (Math.random() - 0.5) * 2  // Random movement in Z direction
+            x: Math.random() * canvasGraph.width,
+            y: Math.random() * canvasGraph.height,
+            dx: (Math.random() - 0.5) * nodeSpeed,
+            dy: (Math.random() - 0.5) * nodeSpeed,
+            phase: Math.random() * Math.PI * 2 // Random phase for pulsating effect
         });
     }
 
+    // Initialize edges connecting all nodes
     for (let i = 0; i < numNodes; i++) {
         for (let j = i + 1; j < numNodes; j++) {
             edges.push([i, j]);
         }
     }
 
+    // Initialize particles along edges
     for (let i = 0; i < numParticles; i++) {
         const edgeIndex = Math.floor(Math.random() * edges.length);
         particles.push({
@@ -47,92 +42,55 @@ function start_animation_graph(containerId, rotationSpeed) {
         });
     }
 
-    function rotateX(point, angle) {
-        const cos = Math.cos(angle);
-        const sin = Math.sin(angle);
-        const y = point.y * cos - point.z * sin;
-        const z = point.y * sin + point.z * cos;
-        return { x: point.x, y, z };
-    }
-
-    function rotateY(point, angle) {
-        const cos = Math.cos(angle);
-        const sin = Math.sin(angle);
-        const x = point.x * cos - point.z * sin;
-        const z = point.x * sin + point.z * cos;
-        return { x, y: point.y, z };
-    }
-
-    function rotateZ(point, angle) {
-        const cos = Math.cos(angle);
-        const sin = Math.sin(angle);
-        const x = point.x * cos - point.y * sin;
-        const y = point.x * sin + point.y * cos;
-        return { x, y, z: point.z };
-    }
-
     function drawGraph() {
         ctxGraph.clearRect(0, 0, canvasGraph.width, canvasGraph.height);
-        const angle = Date.now() / rotationSpeed; // Use rotation speed parameter
 
-        const rotatedNodes = nodes.map(node => {
-            let rotated = rotateX(node, angle);
-            rotated = rotateY(rotated, angle);
-            rotated = rotateZ(rotated, angle);
-            rotated.x += node.moveX; // Apply random movement in X direction
-            rotated.y += node.moveY; // Apply random movement in Y direction
-            rotated.z += node.moveZ; // Apply random movement in Z direction
-            return rotated;
+        // Move nodes and handle boundary collisions
+        nodes.forEach(node => {
+            node.x += node.dx;
+            node.y += node.dy;
+
+            // Bounce off the canvas edges
+            if (node.x <= 0 || node.x >= canvasGraph.width) node.dx *= -1;
+            if (node.y <= 0 || node.y >= canvasGraph.height) node.dy *= -1;
         });
 
-        rotatedNodes.forEach(node => {
-            const scale = 500 / (500 + node.z);
-            const x = node.x * scale + canvasGraph.width / 2;
-            const y = node.y * scale + canvasGraph.height / 2;
-            const pulsate = Math.sin(Date.now() / 500 + node.phase) * 2 + 5; // Pulsating effect
+        // Draw nodes with pulsating effect
+        nodes.forEach(node => {
+            const pulsate = Math.sin(Date.now() / 500 + node.phase) * 2 + 5;
             ctxGraph.beginPath();
-            ctxGraph.arc(x, y, pulsate * scale, 0, Math.PI * 2);
-            ctxGraph.fillStyle = 'rgba(139, 233, 253, 0.8)';
+            ctxGraph.arc(node.x, node.y, pulsate, 0, Math.PI * 2);
+            ctxGraph.fillStyle = edgeColor;
             ctxGraph.fill();
         });
 
+        // Draw edges
         edges.forEach(edge => {
             const [i, j] = edge;
-            const nodeA = rotatedNodes[i];
-            const nodeB = rotatedNodes[j];
-            const scaleA = 500 / (500 + nodeA.z);
-            const scaleB = 500 / (500 + nodeB.z);
-            const xA = nodeA.x * scaleA + canvasGraph.width / 2;
-            const yA = nodeA.y * scaleA + canvasGraph.height / 2;
-            const xB = nodeB.x * scaleB + canvasGraph.width / 2;
-            const yB = nodeB.y * scaleB + canvasGraph.height / 2;
+            const nodeA = nodes[i];
+            const nodeB = nodes[j];
             ctxGraph.beginPath();
-            ctxGraph.moveTo(xA, yA);
-            ctxGraph.lineTo(xB, yB);
+            ctxGraph.moveTo(nodeA.x, nodeA.y);
+            ctxGraph.lineTo(nodeB.x, nodeB.y);
             ctxGraph.strokeStyle = edgeColor;
             ctxGraph.stroke();
         });
 
+        // Draw particles moving along edges
         particles.forEach(particle => {
             const edge = edges[particle.edgeIndex];
-            const nodeA = rotatedNodes[edge[0]];
-            const nodeB = rotatedNodes[edge[1]];
-            const scaleA = 500 / (500 + nodeA.z);
-            const scaleB = 500 / (500 + nodeB.z);
-            const xA = nodeA.x * scaleA + canvasGraph.width / 2;
-            const yA = nodeA.y * scaleA + canvasGraph.height / 2;
-            const xB = nodeB.x * scaleB + canvasGraph.width / 2;
-            const yB = nodeB.y * scaleB + canvasGraph.height / 2;
+            const nodeA = nodes[edge[0]];
+            const nodeB = nodes[edge[1]];
 
-            const x = xA + (xB - xA) * particle.progress;
-            const y = yA + (yB - yA) * particle.progress;
+            const x = nodeA.x + (nodeB.x - nodeA.x) * particle.progress;
+            const y = nodeA.y + (nodeB.y - nodeA.y) * particle.progress;
 
             ctxGraph.beginPath();
-            ctxGraph.arc(x, y, 3, 0, Math.PI * 2);
+            ctxGraph.arc(x, y, 1, 0, Math.PI * 2);
             ctxGraph.fillStyle = neuronColor;
             ctxGraph.fill();
 
-            particle.progress += 0.01;
+            particle.progress += particleSpeed / 1000;
             if (particle.progress > 1) {
                 particle.progress = 0;
             }
@@ -143,5 +101,3 @@ function start_animation_graph(containerId, rotationSpeed) {
 
     drawGraph();
 }
-
-
